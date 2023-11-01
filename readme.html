@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Prompter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div>
+        <p>Ce script est un script auxiliaire pour Regional Prompter et fonctionne comme un script personnalisé pour
+            Stable Diffusion web-ui (comme XYZ plot etc.). Ce script utilise la spécification de la région d'invite du
+            Regional Prompter pour créer des images de différences et des animations cohérentes. Il est possible de
+            créer des différences avec un certain degré de cohérence en utilisant la spécification conventionnelle de la
+            région par l'invite. Cependant, lors du processus de débruitage, des différences apparaissent même en dehors
+            de la zone spécifiée et les différences ne sont pas parfaites. Avec ce script, il est possible de refléter
+            uniquement les différences dans la zone spécifiée par l'invite à partir de l'image initiale. En modifiant
+            continuellement les différences, il est possible de créer des animations fluides.</p>
+        <p>L'image suivante montre la différence créée à l'aide de ce script, avec les yeux fermés appliqués uniquement
+            à la zone calculée à partir des yeux ; la troisième image est un gif d'animation.</p>
+    </div>
+
+    <img src="./pics/dsample1.jpg" alt="">
+    <img src="./pics/dsample2.jpg" alt="">
+    <img src="./pics/dsample.gif" alt="clin d'oeil" title="clin d'oeil">
+
+    <div>
+        <p>
+            De cette manière, vous pouvez créer des images qui semblent cohérentes, sauf lorsqu'elles sont modifiées ;
+            elles peuvent être utilisées à des fins diverses, telles que des images pour la méthode d'apprentissage de
+            la photocopieuse de la LoRA.
+            Vous pouvez également utiliser la fonction de planification pour créer des animations simples. Cette
+            fonction fonctionne seule avec Regional Prompter et ne nécessite aucun module supplémentaire, etc.
+        </p>
+    </div>
+
+    <h2>Principe de fonctionnement.</h2>
+    <p>En interne, la différence est créée à l'aide de l'édition de l'invite et de l'invite régionale pour spécifier la
+        région. Cela permet d'obtenir un degré plus élevé de cohérence avec l'image originale. Par exemple, si vous
+        souhaitez créer une différence avec des yeux fermés et que vous ajoutez des yeux fermés à l'invite, l'ensemble
+        de l'image risque d'être modifié de manière significative. Par conséquent, en utilisant [:yeux fermés:4] et en
+        appliquant les yeux fermés à partir de la quatrième étape, vous pouvez obtenir une cohérence avec l'image
+        originale. L'étape dans l'écran des paramètres indique l'étape de début de l'édition de l'invite.</p>
+
+    <h2>Utilisation.</h2>
+    <p>Sélectionnez l'invite régionale différentielle dans le script - si l'invite régionale est installée, aucun autre
+        paramètre n'est nécessaire.</p>
+
+    <img src="./pics/gamen.jpg" alt="">
+
+    <h3>Options</h3>
+    <p>L'activation de l'option Inverser génère la vidéo en sens inverse. La raison pour laquelle cela est nécessaire
+        est décrite ci-dessous.</p>
+
+    <h3>Additional Output</h3>
+    <p>Choisissez de générer une vidéo (mp4) ou un Anime Gif. S'ils sont sélectionnés, ils seront générés directement
+        dans le dossier Output.</p>
+
+    <h3>Step</h3>
+    <p>Spécifie le pas de départ utilisé dans l'édition de l'invite. En général, un pas de 4~6 est suffisant.</p>
+
+    <h3>FPS</h3>
+    <p>Définit la fréquence d'images utilisée lors de la création de la vidéo. La durée des gifs animés est calculée sur
+        la base de 1000/FPS.</p>
+
+    <h3>Schedule</h3>
+    <p>Saisissez l'invite de différence. Voir le cas d'utilisation pour une explication détaillée.</p>
+
+    <h3>mp4 output directory</h3>
+    <p>Entrez le répertoire dans lequel le mp4 sera produit. S'il est vide, il sera placé directement sous le dossier
+        output/txt2img-images. Si vous entrez une valeur ici, le répertoire spécifié sera créé directement sous output.
+    </p>
+
+    <h3>mp4 output filename</h3>
+    <p>Spécifie le nom du fichier mp4. S'il est vide, les fichiers sont numérotés drp.mp4,drp_1.mp4... S'il est vide, un
+        fichier numéroté séquentiellement sera créé. Si vous entrez test ici, des fichiers numérotés séquentiellement
+        tels que test.mp4,test_1.mp4 seront créés. Aucun écrasement n'est effectué.</p>
+
+    <h3>mp4 output directory</h3>
+    <p>Saisissez le répertoire dans lequel les images animées seront produites. S'il n'est pas renseigné, il sera placé
+        directement sous le dossier output/txt2img-images. Si vous entrez une valeur ici, le répertoire spécifié sera
+        créé directement sous output.</p>
+
+    <h3>mp4 output filename</h3>
+    <p>Spécifie le nom du fichier Anime gif. S'il est laissé vide, les fichiers seront numérotés drp.gif,drp_1.gif...
+        S'il est vide, des fichiers avec des numéros séquentiels sont créés. Si vous entrez test ici, des fichiers
+        numérotés séquentiellement tels que test.gif,test_1.gif seront créés. Aucun écrasement n'est effectué.</p>
+
+    <h2>Quelques exemples</h2>
+
+    <h3>Clignez des yeux</h3>
+    <p>Cette section suppose que vous créez une différence avec les yeux fermés. Tout d'abord, saisissez l'invite
+        principale dans le champ de saisie normal de l'invite. Voici.</p>
+
+    <code>a girl in garden face close up, eyes</code>
+
+    <p>Disons que... Il est important de noter que EYES est saisi ici. Ceci est nécessaire pour le calcul de la région
+        de différence. Ensuite, entrez ce qui suit dans le calendrier : dans le champ Paramètres du prompteur régional,
+        entrez un seuil d'environ 0,6.</p>
+
+    <code><p>0</p>
+    <p>closed eyes;eyes;1.3</p></code>
+
+    <p>Si vous activez l'option Anime gif, vous pouvez également créer un Anime gif. Voici une explication de chaque
+        valeur de réglage.</p>
+
+    <code>prompt;prompt for region calculation;weight;step</code>
+
+
+    <p>Saisissez chaque valeur de réglage sur chaque ligne, en les séparant par des <b>" ;"</b>, comme dans le cas
+        suivant.</p>
+
+    <h3>Prompt</h3>
+    Invitation à créer une différence
+
+    <h3>prompt for region</h3>
+    Invitation au calcul de la région
+
+    <h3>weight</h3>
+    Poids de l'invite
+
+    <h3>step </h3>(facultatif)
+    Nombre de pas pour lesquels l'invite de différence est active.
+
+    <p>Pour closed eyes;eyes;1.3;4, l'invite [ :(closed eyes:1.3):4] est saisie au moment de l'exécution. </p>
+
+    <h2>Smile</h2>
+    <p>Ensuite, créons une animation avec des changements continus. Saisissez ce qui suit dans Schedule sans modifier
+        l'invite.</p>
+
+    <code>
+            <ul>
+                <li>0*10</li>
+                <li>smile;face;1.2;20-6(2)</li>
+                <li>smile;face;1.2*10</li>
+            </ul>
+    </code>
+
+    <p>L'ordre est celui de la ligne 1,</p>
+
+    <code>
+        10 images de l'image initiale. <br>
+Diminuer le STEP de 20 à 6 par 2 avec une intensité SMILE de 1,2 pour la région FACE.<br>
+10 images avec une intensité SMILE de 1,5 pour la région FACE<br></code>
+
+    <p>Cela signifie que. Si vous saisissez 20-6, une série d'invites sera automatiquement saisie et générée, en diminuant d'un cran à partir de 20, 19, ...., . 6 et ainsi de suite, en diminuant d'un cran à chaque fois. . 6 et ainsi de suite, chaque étape diminuant d'une unité. Dans ce cas, l'échelon est diminué ou augmenté d'une unité. (2) spécifie l'augmentation ou la diminution à 2. Ainsi, dans le cas de 20-6(2), l'invite pour les étapes 20,18,16.... ...6 étapes sont générées à l'invite. Si les 20 étapes sont toutes générées à ce moment-là, le SMILE n'apparaît pas dans l'invite à l'étape = 20. En augmentant progressivement le nombre de pas reflétés à partir de cet état, l'intensité du sourire augmente. Ainsi, une animation est créée dans laquelle le sourire est progressivement généré.</p>
+
+    <img src="./pics/dsample5.gif" alt="sourire progressif" title="sourire progressif">
+
+    <p>Ce format est également valable pour le poids, où la saisie de 1.0-1.3 produit automatiquement une série de valeurs 1.0, 1.1, 1.2, 1.3. Dans ce cas, l'augmentation dépend du nombre de décimales : écrire 1.00-1.10 donnera des incréments de 0.01. Utilisez () pour spécifier l'intervalle d'incrémentation : 1.0-1.3 (0.05) signifie une augmentation de 1.0 à 1.3 par incréments de 0.05. Dans ce cas, 1.00, 1.05, 1.10, 1.15, 1.20, 1.25, 1.30 et 7 images sont créées.</p>
+
+    <h2>Désignations spéciales</h2>
+
+    <p>Des instructions telles que step=5 th=0,45 ex-on,0,01 ex-off peuvent être introduites. Le pas, la valeur seuil pour la spécification de la zone, etc. peuvent être modifiés au cours du processus.</p>
+
+    <p>ex-on et ex-off sont des réglages pour les semences supplémentaires. Comme certains d'entre vous se demandent peut-être "qu'est-ce que c'est que ça ?", laissez-moi vous expliquer : vous savez qu'une graine qui diffère de 1 donnera une image complètement différente. la graine est une valeur entière, de sorte que les valeurs inférieures à 1 ne peuvent pas être décalées, mais la graine supplémentaire rend cela possible. Les semences supplémentaires permettent d'obtenir des images complètement différentes. Cela fonctionne bien pour les arrière-plans, les effets, etc. L'image suivante a été créée avec les instructions suivantes</p>
+
+<code>0 <br>
+    ex-on,0.005 <br>
+     lightning_thunder;1.00-1.05 <br></code>
+
+<p>0,005 est la quantité de changement dans la graine supplémentaire. Si vous le réglez à ce niveau, l'effet sera semblable à un éclair. Notez que si vous le réglez à un niveau plus élevé, l'image aura l'air d'avoir été créée à partir d'une graine complètement différente, ce qui la rendra insignifiante.</p>
+
+<img src="./pics/dsample4.gif" alt="lightning" title="lightning">
+
+<p>Vous pouvez spécifier une région pour plusieurs mots en les reliant entre eux, par exemple lightning_thunder. Le champ de saisie de l'invite doit également contenir les mots reliés. 1.00-1.05 sont des incréments de 0.01 pour demander à l'utilisateur de dessiner cinq motifs.</p>
+
+<code> ;lightning_thunder;1.00</code>
+
+<p>cinq fois parce qu'il s'agit de la même instruction et qu'elle n'est donc calculée qu'une seule fois.</p>
+
+<code>
+    #smile and blink 　　　   
+0*20                                    
+smile;face;1.2;13-6　　  
+smile;face;1.2*10　　　  
+smile;face;1.2;6-13　　  
+0*20                             
+closed eyes;eyes;1.4*3  
+0*20
+</code>
+
+<p>L'ordre est celui de la ligne 1,</p>
+
+<code>
+    Les lignes qui ne correspondent pas au format sont ignorées. <br>
+Affichage de l'image initiale de 20 images <br>
+Spécifiez (sourire:1.2) dans la zone du visage, en diminuant de l'étape 13 à 6. <br>
+Spécifier le sourire dans la zone du visage pour 10 images (l'étape est la valeur par défaut). <br>
+Spécifiez (smile:1.2) dans la zone du visage tout en augmentant la valeur de l'étape 6 à 13. <br>
+de l'étape 6 à l'étape 13 <br>
+Affichez l'image initiale pour 20 images <br>
+ Spécifiez (yeux fermés:1.4) pour la zone des yeux. <br>
+ Affichez l'image initiale pour 20 images. <br>
+</code>
+</body>
+
+</html>
